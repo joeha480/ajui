@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project default="all">
+	<description>Buildfile for this project</description>
+	
+	<!-- Timestamp format definition -->
+	<tstamp>
+		<format property="ISO-TODAY" pattern="yyyy-MM-dd"/>
+	</tstamp>
+	
+	<!-- ================================================================== -->
+	<!-- Common properties                                                  -->
+	<!-- ================================================================== -->
+
+	<property name="release-name" value="Accessible Java GUI"/>
+	<property name="release-version" value="1.1.0rc1"/>
+	<property name="release-url" value="http://code.google.com/p/ajui/"/>
+	<property name="ant-build.dir" value="${basedir}/ant-build"/>
+	<property name="ant-output.dir" value="${ant-build.dir}/output"/>
+	<property name="dist.dir" value="${ant-output.dir}/dist"/>
+	<property name="src.dir" value="${basedir}/src"/>
+	<property name="build.dir" value="${ant-output.dir}/build.temp"/>
+	<property name="javadoc.dir" value="${ant-output.dir}/docs/javadoc"/>
+		
+	<!-- Timestamp format definition -->
+	<tstamp>
+		<format property="ISO-TODAY" pattern="yyyy-MM-dd"/>
+	</tstamp>
+	
+	<!-- ================================================================== -->
+	<!-- Private targets                                                    -->
+	<!-- ================================================================== -->
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: createDistDir                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="createDistDir">
+    	<mkdir dir="${dist.dir}"/>
+    </target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: emptyBuildDir                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="emptyBuildDir">
+    	<delete dir="${build.dir}"/>
+    	<mkdir dir="${build.dir}"/>
+    </target>
+
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: createJavadocDir                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="createJavadocDir">
+    	<mkdir dir="${javadoc.dir}"/>
+    </target>
+	
+	<!-- - - - - - - - - - - - - - - - - - 
+          target: buildJavadoc                      
+         - - - - - - - - - - - - - - - - - -->
+    <target name="buildJavadoc" depends="createJavadocDir">
+    	<javadoc destdir="${javadoc.dir}"
+    			windowtitle="javaHtmlGui"
+    			encoding="UTF-8"
+    			charset="UTF-8">
+    		<link offline="true" href="http://java.sun.com/javase/6/docs/api/" packagelistLoc="ant-build/resources/javase-6"/>
+    		<fileset dir="${src.dir}">
+    			<include name="**/*.java"/>
+    		</fileset>
+    	</javadoc>
+    </target>
+	
+	<!-- - - - - - - - - - - - - - - - - -
+          target: compile              
+         - - - - - - - - - - - - - - - - - -->
+    <target name="compile" depends="emptyBuildDir">
+        <javac srcdir="${src.dir}" destdir="${build.dir}" includeantruntime="false" debug="true" encoding="UTF-8">
+        </javac>
+    </target>
+	
+	<!-- ================================= 
+          target: all             
+         ================================= -->
+    <target name="all" depends="createDistDir, compile, buildJavadoc" description="--> description">
+    	<jar destfile="${dist.dir}/ajui-${release-version}.jar" >
+    		<fileset dir="${build.dir}">
+    			<include name="**/*.class"/>
+    		</fileset>
+    		<fileset dir="${src.dir}">
+    			<include name="**/*.*"/>
+    		</fileset>
+    		<manifest>
+    			<attribute name="Built-By" value="${user.name}"/>
+    			<attribute name="Built-On" value="${ISO-TODAY}"/>
+    			<attribute name="Implementation-Title" value="${release-name}"/>
+    			<attribute name="Implementation-Version" value="${release-version}"/>
+    			<attribute name="Implementation-URL" value="${release-url}"/>
+    		</manifest>
+    	</jar>
+    	<delete dir="${build.dir}"/>
+    </target>
+</project>
