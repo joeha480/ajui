@@ -12,7 +12,7 @@
 	<!-- ================================================================== -->
 
 	<property name="release-name" value="Accessible Java GUI"/>
-	<property name="release-version" value="1.1.0rc1"/>
+	<property name="release-version" value="1.1.0b"/>
 	<property name="release-url" value="http://code.google.com/p/ajui/"/>
 	<property name="ant-build.dir" value="${basedir}/ant-build"/>
 	<property name="ant-output.dir" value="${ant-build.dir}/output"/>
@@ -31,9 +31,10 @@
 	<!-- ================================================================== -->
 	
 	<!-- - - - - - - - - - - - - - - - - - 
-          target: createDistDir                      
+          target: emptyDistDir                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="createDistDir">
+    <target name="emptyDistDir">
+    	<delete dir="${dist.dir}"/>
     	<mkdir dir="${dist.dir}"/>
     </target>
 	
@@ -46,16 +47,17 @@
     </target>
 
 	<!-- - - - - - - - - - - - - - - - - - 
-          target: createJavadocDir                      
+          target: emptyJavadocDir                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="createJavadocDir">
+    <target name="emptyJavadocDir">
+    	<delete dir="${javadoc.dir}"/>
     	<mkdir dir="${javadoc.dir}"/>
     </target>
 	
 	<!-- - - - - - - - - - - - - - - - - - 
           target: buildJavadoc                      
          - - - - - - - - - - - - - - - - - -->
-    <target name="buildJavadoc" depends="createJavadocDir">
+    <target name="buildJavadoc" depends="emptyJavadocDir">
     	<javadoc destdir="${javadoc.dir}"
     			windowtitle="javaHtmlGui"
     			encoding="UTF-8"
@@ -78,7 +80,7 @@
 	<!-- ================================= 
           target: all             
          ================================= -->
-    <target name="all" depends="createDistDir, compile, buildJavadoc" description="--> description">
+    <target name="all" depends="emptyDistDir, compile, buildJavadoc" description="--> description">
     	<jar destfile="${dist.dir}/ajui-${release-version}.jar" >
     		<fileset dir="${build.dir}">
     			<include name="**/*.class"/>
