@@ -27,6 +27,22 @@ public class XHTMLTagger extends XMLTagger {
 	public XHTMLTagger() {
 		super();
 	}
+	
+	public XHTMLTagger start(String name) {
+		return (XHTMLTagger)super.start(name);
+	}
+	
+	public XHTMLTagger end() {
+		return (XHTMLTagger)super.end();
+	}
+	
+	public XHTMLTagger text(String text) {
+		return (XHTMLTagger)super.text(text);
+	}
+	
+	public XHTMLTagger attr(String name, String value) {
+		return (XHTMLTagger)super.attr(name, value);
+	}
 
 	/**
 	 * Starts a select tag, storing the current value for setting "selected" when adding option

@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.Reader;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Date;
 import java.util.Vector;
 
@@ -172,12 +173,17 @@ outerloop:
         		ui.log(" " + f + " " + context.getArgs().get(f)); //$NON-NLS-1$ //$NON-NLS-2$
         	}
             if (doingGet) {
-        		InputStream iss = ui.getResourceURL(target).openStream();
-        		if (iss!=null) {
-        			sendStream(context, new BufferedInputStream(iss), ps);
-        		} else {
-        			send404(target, ps);
-        		}
+            	URL resource = ui.getResourceURL(target);
+            	if (resource!=null) {
+	            	InputStream iss = resource.openStream();
+	        		if (iss!=null) {
+	        			sendStream(context, new BufferedInputStream(iss), ps);
+	        		} else {
+	        			send404(target, ps);
+	        		}
+            	} else {
+            		send404(target, ps);
+            	}
             }
         } finally {
             s.close();

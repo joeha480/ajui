@@ -177,6 +177,18 @@ public class BrowserUI {
     	return -1;
     }
     
+    public void registerContents(Content c) {
+    	String key = c.getClass().getCanonicalName();
+    	if (key != null) {
+    		if (contents.containsKey(key)) {
+    			throw new IllegalStateException("Content already registered");
+    		}
+    		contents.put(key, c);
+    	} else {
+    		throw new IllegalArgumentException("Cannot get canonical name for " + c);
+    	}
+    }
+    
     public void display(String page) throws IOException {
     	if (!running) {
     		startServer();
