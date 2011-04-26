@@ -12,7 +12,6 @@ import java.io.PrintStream;
 import java.io.Reader;
 import java.net.Socket;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Vector;
 
 
@@ -21,7 +20,7 @@ class Worker implements HttpConstants, Runnable {
     final static String ENCODING = "utf-8";
     final static byte[] st = new byte[]{'<', '?', 'a', 'j', 'u', 'i', ' '};
     static final byte[] EOL = {(byte)'\r', (byte)'\n' };
-    protected HashMap<String, Content> contents;
+    
     boolean stopped;
     /* buffer to use for requests */
     byte[] buf;
@@ -35,7 +34,6 @@ class Worker implements HttpConstants, Runnable {
         buf = new byte[BUF_SIZE];
         s = null;
         stopped=false;
-        contents = new HashMap<String, Content>();
     }
 
     synchronized void setSocket(Socket s) {
@@ -358,12 +356,12 @@ outerloop:
             				key = sspl[1];
             			}
             			Reader reader = null;
-            			if (contents.containsKey(str)) {
-            				reader = contents.get(str).getContent(key, context);
+            			if (ui.contents.containsKey(str)) {
+            				reader = ui.contents.get(str).getContent(key, context);
             			} else {
             				try {
 								Content c = (Content)Class.forName(str).newInstance();
-								contents.put(str, c);
+								ui.contents.put(str, c);
 								reader = c.getContent(key, context);
 							} catch (InstantiationException e) {
 								// TODO Auto-generated catch block

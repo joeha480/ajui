@@ -6,6 +6,9 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -32,6 +35,8 @@ public class BrowserUI {
     private final String root;
     /* Where worker threads stand idle */
     Vector<Worker> threads = new Vector<Worker>();
+    /* Contents catalog */
+    final Map<String, Content> contents;
     /* timeout on client connections */
     final int timeout;
     /* max # worker threads */
@@ -107,6 +112,7 @@ public class BrowserUI {
     	this.timeout = builder.timeout;
     	this.log = builder.log;
     	this.appTimeout = builder.appTimeout;
+    	this.contents = Collections.synchronizedMap(new HashMap<String, Content>());
     }
 
     /* print to stdout */
