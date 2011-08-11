@@ -23,4 +23,9 @@ public interface Content {
 	 * @throws IOException if IO fails
 	 */
 	public Reader getContent(String key, Context context) throws IOException;
+	
+	/**
+	 * Notifies about pending shut down.
+	 */
+	public void close();
 }

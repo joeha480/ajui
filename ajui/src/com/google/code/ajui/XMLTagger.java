@@ -62,11 +62,20 @@ public class XMLTagger {
 			sb.append(" ");
 			sb.append(name);
 			sb.append("=\"");
-			sb.append(value);
+			sb.append(escape(value));
 			sb.append("\"");
 		} else {
 			throw new IllegalStateException("Cannot start attribute when contents has been written.");
 		}
+		return this;
+	}
+	
+	public XMLTagger insert(XMLTagger subtree) {
+    	if (!startOK) {
+    		sb.append(">");
+    		startOK = true;
+    	}
+		sb.append(subtree.getResult());
 		return this;
 	}
 	

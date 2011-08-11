@@ -235,6 +235,11 @@ public class BrowserUI {
 		        		stopServer();
 		        	}
 		        }
+		        synchronized (contents) {
+		        	for (Content c : contents.values()) {
+		        		c.close();
+		        	}
+		        }
 		        synchronized (threads) {
 		        	for (Worker w2 : threads) {
 		        		w2.stop();

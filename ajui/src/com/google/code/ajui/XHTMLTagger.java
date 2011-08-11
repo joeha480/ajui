@@ -43,6 +43,10 @@ public class XHTMLTagger extends XMLTagger {
 	public XHTMLTagger attr(String name, String value) {
 		return (XHTMLTagger)super.attr(name, value);
 	}
+	
+	public XHTMLTagger insert(XHTMLTagger subtree) {
+		return (XHTMLTagger)super.insert(subtree);
+	}
 
 	/**
 	 * Starts a select tag, storing the current value for setting "selected" when adding option
@@ -64,6 +68,13 @@ public class XHTMLTagger extends XMLTagger {
 	public XHTMLTagger tag(String element, String contents) {
 		start(element);
 		text(contents);
+		end();
+		return this;
+	}
+	
+	public XHTMLTagger tag(String element, XHTMLTagger contents) {
+		start(element);
+		insert(contents);
 		end();
 		return this;
 	}
