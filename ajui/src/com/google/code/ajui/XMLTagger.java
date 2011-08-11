@@ -87,6 +87,9 @@ public class XMLTagger {
 	}
 
 	private String escape(String text) {
+		if (text==null) {
+			return "";
+		}
 		return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
 	}
 
