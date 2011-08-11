@@ -1,4 +1,4 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 import javax.swing.JOptionPane;
 import java.util.Arrays;

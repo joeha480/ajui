@@ -1,4 +1,4 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 /**
  * Provides a simple XHTML tagger

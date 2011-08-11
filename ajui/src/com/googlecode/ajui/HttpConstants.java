@@ -1,4 +1,4 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 interface HttpConstants {
     /** 2XX: generally "OK" */

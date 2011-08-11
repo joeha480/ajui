@@ -1,4 +1,4 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 import java.util.Locale;
 import java.util.MissingResourceException;

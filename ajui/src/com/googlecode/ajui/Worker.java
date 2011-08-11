@@ -1,7 +1,7 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 
-import static com.google.code.ajui.MimeTypes.MIME_TYPES;
+import static com.googlecode.ajui.MimeTypes.MIME_TYPES;
 
 import java.io.BufferedInputStream;
 import java.io.File;

@@ -1,4 +1,4 @@
-package com.google.code.ajui;
+package com.googlecode.ajui;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
