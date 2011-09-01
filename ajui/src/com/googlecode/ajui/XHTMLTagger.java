@@ -5,20 +5,6 @@ package com.googlecode.ajui;
  * @author Joel Håkansson
  */
 public class XHTMLTagger extends XMLTagger {
-	/**
-	 * Defines the HTTP request method
-	 */
-	public enum RequestMethod {
-		/**
-		 * HTTP GET
-		 */
-		GET,
-		/**
-		 * HTTP POST
-		 */
-		POST
-		};
-	private String cval = "";
 	
 	public XHTMLTagger(StringBuffer sb) {
 		super(sb);
@@ -49,17 +35,6 @@ public class XHTMLTagger extends XMLTagger {
 	}
 
 	/**
-	 * Starts a select tag, storing the current value for setting "selected" when adding option
-	 * @param currentValue
-	 * @return returns this object
-	 */
-	public XHTMLTagger startSelect(String currentValue) {
-		start("select");
-		this.cval = currentValue;
-		return this;
-	}
-	
-	/**
 	 * Adds a tag with the supplied text content
 	 * @param element the element name
 	 * @param contents the text contents
@@ -78,23 +53,5 @@ public class XHTMLTagger extends XMLTagger {
 		end();
 		return this;
 	}
-	
-	public XHTMLTagger startForm(String action, RequestMethod method) {
-		start("form").attr("action", action).attr("method", method.toString().toLowerCase());
-		return this;
-	}
-	
-	public XHTMLTagger startForm(String action) {
-		return startForm(action, RequestMethod.GET);
-	}
-	
-    public void addOption(String displayName, String val) {
-    	start("option").attr("value", val);
-    	if (val.equals(cval)) {
-    		attr("selected", "selected");
-    	}
-    	text(displayName);
-    	end();
-    }
 
 }

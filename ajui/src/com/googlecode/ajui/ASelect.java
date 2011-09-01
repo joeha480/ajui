@@ -14,7 +14,7 @@ public class ASelect extends AbstractComponent<AOption> implements AInlineCompon
 	
 	public void setSelected(String val) {
 		for (AOption o : this) {
-			o.setIsSelected(val.equals(o.getValue()));
+			o.setIsSelected(o.getValue().equals(val));
 		}
 	}
 

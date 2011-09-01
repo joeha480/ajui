@@ -1,12 +1,18 @@
 package com.googlecode.ajui;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractComponent<T extends AComponent> extends ArrayList<T> implements AComponent {
 
+	private static Hashtable<String, AComponent> registry;
+	static {
+		registry = new Hashtable<String, AComponent>();
+	}
 	/**
 	 * 
 	 */
@@ -14,11 +20,13 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	protected List<String> classes;
 	protected Map<String, String> attrs;
 	protected String id;
+	private Date updated;
 	
 	public AbstractComponent() {
 		this.classes = new ArrayList<String>();
 		this.id = null;
 		this.attrs = new HashMap<String, String>();
+		this.updated = new Date();
 	}
 
 	protected abstract String getTagName();
@@ -41,15 +49,26 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	/**
 	 * @return the id
 	 */
-	public String getId() {
+	public String getIdentifier() {
 		return id;
 	}
 
 	/**
 	 * @param id the id to set
 	 */
-	public void setId(String id) {
+	public synchronized void setIdentifier(String id) {
+		if (registry.containsKey(id)) {
+			throw new IllegalArgumentException("Identifier already in use: " + id);
+		}
+		if (this.id!=null) {
+			registry.remove(this.id);
+		}
+		registry.put(id, this);
 		this.id = id;
+	}
+	
+	public synchronized static AComponent getComponent(String id) {
+		return registry.get(id);
 	}
 
 	public String addAttribute(String key, String value) {
@@ -81,8 +100,8 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 			}
 			classes.append(s);
 		}
-		if (getId()!=null && !getId().equals("")) {
-			tagger.attr("id", getId());
+		if (getIdentifier()!=null && !getIdentifier().equals("")) {
+			tagger.attr("id", getIdentifier());
 		}
 		if (classes.length()>0) {
 			tagger.attr("class", classes.toString());
@@ -91,7 +110,28 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 			tagger.insert(c.getHTML(context));
 		}
 		tagger.end();
+		updated = new Date();
 		return tagger;
+	}
+	
+	@Override
+	public List<T> getChildren() {
+		return this;
+	}
+
+	@Override
+	public boolean hasUpdates(Date since) {
+		return updated.after(since);
+	}
+
+	@Override
+	public boolean hasIdentifer() {
+		return id!=null && !"".equals(id);
+	}
+
+	@Override
+	public void update() {
+		updated = new Date();
 	}
 
 }

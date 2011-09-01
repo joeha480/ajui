@@ -90,7 +90,7 @@ public class XMLTagger {
 		if (text==null) {
 			return "";
 		}
-		return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;");
+		return text.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll("\"", "&quot;");
 	}
 
 }

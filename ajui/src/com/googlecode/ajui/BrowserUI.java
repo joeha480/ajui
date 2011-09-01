@@ -249,7 +249,9 @@ public class BrowserUI {
 			} catch (IOException e) {
 				e.printStackTrace();
 			} finally {
-		        threads = null;
+				synchronized (threads) {
+					threads = null;
+				}
 		        running = false;
 		        log("Server closed.");				
 			}

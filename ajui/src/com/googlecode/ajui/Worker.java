@@ -71,6 +71,9 @@ class Worker implements HttpConstants, Runnable {
              */
             s = null;
             Vector<Worker> pool = ui.threads;
+            if (pool==null) {
+            	return;
+            }
             synchronized (pool) {
                 if (pool.size() >= ui.workers) {
                     // too many threads, exit this one
