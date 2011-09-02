@@ -365,12 +365,14 @@ outerloop:
             				key = sspl[1];
             			}
             			Reader reader = null;
-            			if (ui.contents.containsKey(str)) {
-            				reader = ui.contents.get(str).getContent(key, context);
+            			Content c = null;
+            			if ((c=ui.getContents(str))!=null) {
+            				reader = c.getContent(key, context);
             			} else {
             				try {
-								Content c = (Content)Class.forName(str).newInstance();
-								ui.contents.put(str, c);
+								c = (Content)Class.forName(str).newInstance();
+								ui.registerContents(c);
+								//ui.contents.put(str, c);
 								reader = c.getContent(key, context);
 							} catch (InstantiationException e) {
 								// TODO Auto-generated catch block
@@ -395,6 +397,7 @@ outerloop:
             						}
             					}
             	            }
+            				reader.close();
             			}
             		} else if (r==st[j]) {
             			j++;

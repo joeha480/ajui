@@ -36,7 +36,7 @@ public class BrowserUI {
     /* Where worker threads stand idle */
     Vector<Worker> threads = new Vector<Worker>();
     /* Contents catalog */
-    final Map<String, Content> contents;
+    private final Map<String, Content> contents;
     /* timeout on client connections */
     final int timeout;
     /* max # worker threads */
@@ -177,7 +177,11 @@ public class BrowserUI {
     	return -1;
     }
     
-    public void registerContents(Content c) {
+    public synchronized Content getContents(String key) {
+    	return contents.get(key);
+    }
+    
+    public synchronized void registerContents(Content c) {
     	String key = c.getClass().getCanonicalName();
     	if (key != null) {
     		if (contents.containsKey(key)) {

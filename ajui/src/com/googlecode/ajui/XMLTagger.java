@@ -10,6 +10,7 @@ public class XMLTagger {
 	private StringBuffer sb;
 	private Stack<String> elements;
 	private boolean startOK;
+	private boolean shorthandClosing;
 	
 	/**
 	 * @param sb
@@ -18,10 +19,15 @@ public class XMLTagger {
 		this.sb = sb;
 		elements = new Stack<String>();
 		startOK = true;
+		shorthandClosing=true;
 	}
 	
 	public XMLTagger() {
 		this(new StringBuffer());
+	}
+	
+	protected void setShorthandCloseing(boolean value) {
+		shorthandClosing=value;
 	}
 	
 	public XMLTagger start(String name) {
@@ -38,7 +44,13 @@ public class XMLTagger {
 	public XMLTagger end() {
 		String end = elements.pop();
 		if (!startOK) {
-			sb.append("/>");
+			if (shorthandClosing) {
+				sb.append("/>");
+			} else {
+				sb.append("></");
+	    		sb.append(end);
+	    		sb.append(">");
+			}
 			startOK = true;
 		} else {
     		sb.append("</");

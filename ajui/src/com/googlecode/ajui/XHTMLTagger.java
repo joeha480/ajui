@@ -8,10 +8,12 @@ public class XHTMLTagger extends XMLTagger {
 	
 	public XHTMLTagger(StringBuffer sb) {
 		super(sb);
+		setShorthandCloseing(false);
 	}
 	
 	public XHTMLTagger() {
 		super();
+		setShorthandCloseing(false);
 	}
 	
 	public XHTMLTagger start(String name) {
