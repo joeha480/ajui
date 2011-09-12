@@ -107,7 +107,7 @@ public class BrowserUI {
     	if (acceptRemoteConnections) {
     		this.socketFilter = new TransparentSocketFilter();
     	} else {
-    		this.socketFilter = new LoopbackSocketFilter();
+    		this.socketFilter = new LocalhostSocketFilter();
     	}
     	this.timeout = builder.timeout;
     	this.log = builder.log;
