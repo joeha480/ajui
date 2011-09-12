@@ -9,10 +9,6 @@ import java.util.Map;
 
 public abstract class AbstractComponent<T extends AComponent> extends ArrayList<T> implements AComponent {
 
-	private static Hashtable<String, AComponent> registry;
-	static {
-		registry = new Hashtable<String, AComponent>();
-	}
 	/**
 	 * 
 	 */
@@ -57,18 +53,7 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	 * @param id the id to set
 	 */
 	public synchronized void setIdentifier(String id) {
-		if (registry.containsKey(id)) {
-			throw new IllegalArgumentException("Identifier already in use: " + id);
-		}
-		if (this.id!=null) {
-			registry.remove(this.id);
-		}
-		registry.put(id, this);
 		this.id = id;
-	}
-	
-	public synchronized static AComponent getComponent(String id) {
-		return registry.get(id);
 	}
 
 	public String addAttribute(String key, String value) {
