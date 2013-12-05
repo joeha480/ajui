@@ -330,7 +330,7 @@ outerloop:
             	n = 0;
             	j = 0;
             	while (true) {
-            		r=(byte)is.read();
+            		r=is.read();
             		if (r==-1) {
             			ps.write(buf, 0, n);
             			break;
@@ -345,7 +345,7 @@ outerloop:
             			sb.append((char)r);
             			int prv = -1;
             			while (true) {
-                    		r=(byte)is.read();
+                    		r=is.read();
                     		if (r==-1) {
                     			ps.write(buf, 0, n);
                     			break;

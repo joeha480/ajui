@@ -29,6 +29,7 @@ public class BrowserUI {
     private final boolean acceptRemoteConnections;
 
     private final PrintStream log;
+    
     /* */
     private final int appTimeout;
     /* the web server's virtual root */
@@ -137,8 +138,24 @@ public class BrowserUI {
     }
 
     void stopServer() {
+    	
 		log("Closing server...");
-		stop=true;
+		Runnable r = new Runnable(){
+
+			@Override
+			public void run() {
+				try {
+					//wait a couple of seconds in order for the last resources to be fetched.
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				stop=true;
+			}};
+
+		new Thread(r).start();
+
+		
     }
     
    void startServer() throws IOException {
@@ -165,7 +182,7 @@ public class BrowserUI {
 	        log("port=" + ss.getLocalPort());
 
 	        running=true;
-    		ServerThread server = new ServerThread(this);
+	        ServerThread server = new ServerThread(this);
     		(new Thread(server)).start();
     	}
     }
@@ -236,7 +253,9 @@ public class BrowserUI {
 		        		}
 		        	} catch (SocketTimeoutException e) {
 		        		log("Socket timeout.");
-		        		stopServer();
+		        		if (!stop) {
+		        			stop=true;
+		        		}
 		        	}
 		        }
 		        synchronized (contents) {
