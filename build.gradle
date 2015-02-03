@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+javadoc.options.encoding = 'UTF-8'
+sourceCompatibility = '1.6'
+targetCompatibility = '1.6'
+
+group = "com.googlecode.ajui"
+version = "$releaseVersion"
+
+sourceSets {
+	main {
+		java {
+			srcDir 'src'
+		}
+		resources {
+			srcDir 'src'
+		}
+	}
+	test {
+		java {
+			srcDir 'test'
+		}
+		resources {
+			srcDir 'test'
+		}
+	}
+}
+
+jar {
+	doFirst {
+		manifest {
+	    	attributes ('Built-By': System.getProperty("user.name"),
+	    	'Built-On': new Date().format("yyyy-MM-dd"),
+			'Repository-Revision': "$repositoryRevision",
+			'Implementation-Title': "$releaseName",
+			'Implementation-Version': "$releaseVersion",
+			'Implementation-URL': "$releaseURL",
+			)
+		}
+	}
+	from sourceSets.main.allJava
+	baseName = 'ajui'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
