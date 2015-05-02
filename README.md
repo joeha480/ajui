@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/joeha480/ajui.svg?branch=master)](https://travis-ci.org/joeha480/ajui)
+
 # Accessible Java User Interface #
 Provides a small GUI platform accessible using screen readers and braille displays for software written in Java.
 
