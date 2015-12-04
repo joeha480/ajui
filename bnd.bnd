@@ -1,0 +1,7 @@
+Export-Package:  \
+	com.googlecode.ajui
+Private-Package:  \
+	com.googlecode.ajui.l10n
+Include-Resource: / = src/
+-sources: false
+Service-Component: *
