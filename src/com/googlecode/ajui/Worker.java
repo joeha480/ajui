@@ -47,6 +47,7 @@ class Worker implements HttpConstants, Runnable {
     	notify();
     }
 
+    @Override
     public synchronized void run() {
         while(!stopped) {
             if (s == null) {
@@ -374,13 +375,7 @@ outerloop:
 								ui.registerContents(c);
 								//ui.contents.put(str, c);
 								reader = c.getContent(key, context);
-							} catch (InstantiationException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace(ps);
-							} catch (IllegalAccessException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace(ps);
-							} catch (ClassNotFoundException e) {
+							} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 								// TODO Auto-generated catch block
 								e.printStackTrace(ps);
 							}

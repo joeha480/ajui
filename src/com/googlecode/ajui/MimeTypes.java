@@ -5,7 +5,7 @@ class MimeTypes {
 	private MimeTypes() {}
 	
     /* mapping of file extensions to content-types */
-    final static java.util.Hashtable<String, String> MIME_TYPES = new java.util.Hashtable<String, String>();
+    final static java.util.Hashtable<String, String> MIME_TYPES = new java.util.Hashtable<>();
 
     static {
         fillMap();

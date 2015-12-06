@@ -19,9 +19,9 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	private Date updated;
 	
 	public AbstractComponent() {
-		this.classes = new ArrayList<String>();
+		this.classes = new ArrayList<>();
 		this.id = null;
-		this.attrs = new HashMap<String, String>();
+		this.attrs = new HashMap<>();
 		this.updated = new Date();
 	}
 
@@ -45,6 +45,7 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	/**
 	 * @return the id
 	 */
+        @Override
 	public String getIdentifier() {
 		return id;
 	}

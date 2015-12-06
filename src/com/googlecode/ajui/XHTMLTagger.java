@@ -16,18 +16,22 @@ public class XHTMLTagger extends XMLTagger {
 		setShorthandCloseing(false);
 	}
 	
+        @Override
 	public XHTMLTagger start(String name) {
 		return (XHTMLTagger)super.start(name);
 	}
 	
+        @Override
 	public XHTMLTagger end() {
 		return (XHTMLTagger)super.end();
 	}
 	
+        @Override
 	public XHTMLTagger text(String text) {
 		return (XHTMLTagger)super.text(text);
 	}
 	
+        @Override
 	public XHTMLTagger attr(String name, String value) {
 		return (XHTMLTagger)super.attr(name, value);
 	}

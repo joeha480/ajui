@@ -18,7 +18,7 @@ class ContextImpl implements Context {
         if (fsplit.length>1) {
         	args = parseArgs(fsplit[1]);
         } else {
-        	args = new HashMap<String, String>();
+        	args = new HashMap<>();
         }
         if ("/".equals(targetT)) {
         	targetT = root;
@@ -26,16 +26,18 @@ class ContextImpl implements Context {
         this.target = targetT;
 	}
 
+        @Override
 	public HashMap<String, String> getArgs() {
 		return args;
 	}
 
+        @Override
 	public String getTarget() {
 		return target;
 	}
 	
     private HashMap<String, String> parseArgs(String argStr) {
-    	HashMap<String, String> args = new HashMap<String, String>();
+    	HashMap<String, String> args = new HashMap<>();
        	String[] argSplit = argStr.split("&"); //$NON-NLS-1$
     	for (String s : argSplit) {
     		String[] argVal = s.split("="); //$NON-NLS-1$

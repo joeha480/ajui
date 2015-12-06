@@ -35,7 +35,7 @@ public class BrowserUI {
     /* the web server's virtual root */
     private final String root;
     /* Where worker threads stand idle */
-    Vector<Worker> threads = new Vector<Worker>();
+    Vector<Worker> threads = new Vector<>();
     /* Contents catalog */
     private final Map<String, Content> contents;
     /* timeout on client connections */

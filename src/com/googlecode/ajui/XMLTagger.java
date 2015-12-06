@@ -17,7 +17,7 @@ public class XMLTagger {
 	 */
 	public XMLTagger(StringBuffer sb) {
 		this.sb = sb;
-		elements = new Stack<String>();
+		elements = new Stack<>();
 		startOK = true;
 		shorthandClosing=true;
 	}
