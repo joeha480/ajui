@@ -13,7 +13,7 @@ public class XMLTagger {
 	private boolean shorthandClosing;
 	
 	/**
-	 * @param sb
+	 * @param sb the string buffer to use
 	 */
 	public XMLTagger(StringBuffer sb) {
 		this.sb = sb;

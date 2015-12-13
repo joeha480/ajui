@@ -91,8 +91,6 @@ class Worker implements HttpConstants, Runnable {
     // http://localhost:[port]/embosser-application.html -> app
     
     void handleClient() throws IOException {
-        InputStream is = new BufferedInputStream(s.getInputStream());
-        PrintStream ps = new PrintStream(s.getOutputStream(), false,  ENCODING); //$NON-NLS-1$
         /* we will only block in read for this many milliseconds
          * before we fail with java.io.InterruptedIOException,
          * at which point we will abandon the connection.
@@ -104,7 +102,7 @@ class Worker implements HttpConstants, Runnable {
         for (int i = 0; i < BUF_SIZE; i++) {
             buf[i] = 0;
         }
-        try {
+        try (InputStream is = new BufferedInputStream(s.getInputStream()); PrintStream ps = new PrintStream(s.getOutputStream(), false, ENCODING)) {
             /* We only support HTTP GET/HEAD, and don't
              * support any fancy HTTP options,
              * so we're only interested really in
@@ -112,7 +110,7 @@ class Worker implements HttpConstants, Runnable {
              */
             int nread = 0, r = 0;
 
-outerloop:
+            outerloop:
             while (nread < BUF_SIZE) {
                 r = is.read(buf, nread, BUF_SIZE - nread);
                 if (r == -1) {
@@ -122,7 +120,7 @@ outerloop:
                 int i = nread;
                 nread += r;
                 for (; i < nread; i++) {
-                    if (buf[i] == (byte)'\n' || buf[i] == (byte)'\r') {
+                    if (buf[i] == (byte) '\n' || buf[i] == (byte) '\r') {
                         /* read one line */
                         break outerloop;
                     }
@@ -133,23 +131,23 @@ outerloop:
             boolean doingGet;
             /* beginning of file name */
             int index;
-            if (buf[0] == (byte)'G' &&
-                buf[1] == (byte)'E' &&
-                buf[2] == (byte)'T' &&
-                buf[3] == (byte)' ') {
+            if (buf[0] == (byte) 'G' &&
+                    buf[1] == (byte) 'E' &&
+                    buf[2] == (byte) 'T' &&
+                    buf[3] == (byte) ' ') {
                 doingGet = true;
                 index = 4;
-            } else if (buf[0] == (byte)'H' &&
-                       buf[1] == (byte)'E' &&
-                       buf[2] == (byte)'A' &&
-                       buf[3] == (byte)'D' &&
-                       buf[4] == (byte)' ') {
+            } else if (buf[0] == (byte) 'H' &&
+                    buf[1] == (byte) 'E' &&
+                    buf[2] == (byte) 'A' &&
+                    buf[3] == (byte) 'D' &&
+                    buf[4] == (byte) ' ') {
                 doingGet = false;
                 index = 5;
             } else {
                 /* we don't support this method */
                 ps.print("HTTP/1.0 " + HTTP_BAD_METHOD + //$NON-NLS-1$
-                           " unsupported method type: "); //$NON-NLS-1$
+                        " unsupported method type: "); //$NON-NLS-1$
                 ps.write(buf, 0, 5);
                 ps.write(EOL);
                 ps.flush();
@@ -163,36 +161,36 @@ outerloop:
              * extract "/foo/bar.html"
              */
             for (i = index; i < nread; i++) {
-                if (buf[i] == (byte)' ') {
+                if (buf[i] == (byte) ' ') {
                     break;
                 }
             }
-            String urlStr = (new String(buf, index, i-index));
+            String urlStr = (new String(buf, index, i - index));
             Context context = ui.getContext(urlStr);
             String target = context.getTarget();
-            
+
             ui.log("Target: " + target); //$NON-NLS-1$
-        	ui.log("Args:"); //$NON-NLS-1$
-        	for (String f : context.getArgs().keySet()) {
-        		ui.log(" " + f + " " + context.getArgs().get(f)); //$NON-NLS-1$ //$NON-NLS-2$
-        	}
+            ui.log("Args:"); //$NON-NLS-1$
+            for (String f : context.getArgs().keySet()) {
+                ui.log(" " + f + " " + context.getArgs().get(f)); //$NON-NLS-1$ //$NON-NLS-2$
+            }
             if (doingGet) {
-            	URL resource = ui.getResourceURL(target);
-            	if (resource!=null) {
-	            	InputStream iss = resource.openStream();
-	        		if (iss!=null) {
-	        			sendStream(context, new BufferedInputStream(iss), ps);
-	        		} else {
-	        			send404(target, ps);
-	        		}
-            	} else {
-            		send404(target, ps);
-            	}
+                URL resource = ui.getResourceURL(target);
+                if (resource != null) {
+                    InputStream iss = resource.openStream();
+                    if (iss != null) {
+                        sendStream(context, new BufferedInputStream(iss), ps);
+                    } else {
+                        send404(target, ps);
+                    }
+                } else {
+                    send404(target, ps);
+                }
             }
         } finally {
             s.close();
-            is.close();
-            ps.close();
+
+
         }
     }
 
@@ -227,7 +225,7 @@ outerloop:
                 int ind = name.lastIndexOf('.');
                 String ct = null;
                 if (ind > 0) {
-                    ct = (String) MIME_TYPES.get(name.substring(ind));
+                    ct = MIME_TYPES.get(name.substring(ind));
                 }
                 if (ct == null) {
                     ct = "unknown/unknown"; //$NON-NLS-1$
@@ -259,7 +257,7 @@ outerloop:
         ps.print("Last Modified: " + (new Date())); //$NON-NLS-1$
         ps.write(EOL);
         String ct = null;
-        ct = (String) MIME_TYPES.get(".html"); //$NON-NLS-1$
+        ct = MIME_TYPES.get(".html"); //$NON-NLS-1$
         ps.print("Content-type: " + ct); //$NON-NLS-1$
         ps.write(EOL);
         ps.write(EOL);
@@ -295,7 +293,6 @@ outerloop:
         if (targ.isDirectory()) {
             ps.write(EOL);
             listDirectory(targ, ps);
-            return;
         } else {
             is = new BufferedInputStream(new FileInputStream(targ.getAbsolutePath()));
             sendStream(context, is, ps);
@@ -317,7 +314,7 @@ outerloop:
         String sufix = "";
         if (ind > 0) {
         	sufix = context.getTarget().substring(ind);
-        	ct = (String) MIME_TYPES.get(sufix);
+        	ct = MIME_TYPES.get(sufix);
         }
         ps.print("Content-type: " + ct); //$NON-NLS-1$
         ps.write(EOL);
@@ -342,7 +339,7 @@ outerloop:
             			n=0;
             			j=0;
             			
-            			StringBuffer sb = new StringBuffer();
+            			StringBuilder sb = new StringBuilder();
             			sb.append((char)r);
             			int prv = -1;
             			while (true) {
