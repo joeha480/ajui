@@ -10,12 +10,14 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
+import java.util.logging.Logger;
 
 /**
  * Provides a tiny web server which acts as a GUI for a java application.
  * @author Joel Håkansson
  */
 public class BrowserUI {
+	private final static Logger logger = Logger.getLogger(BrowserUI.class.getCanonicalName());
 	private final static String ROOT_PAGE = "/index.html";
     private final static int SERVER_TIMEOUT = 30000;
     private final static int DEFAULT_TIMEOUT = 5000;
@@ -116,11 +118,6 @@ public class BrowserUI {
     	this.contents = Collections.synchronizedMap(new HashMap<String, Content>());
     }
 
-    /* print to stdout */
-	void p(String s) {
-	    System.out.println(s);
-	}
-
     /* print to the log file */
     void log(String s) {
         synchronized (log) {
@@ -130,11 +127,11 @@ public class BrowserUI {
     }
 
     void printProps() {
-        p("root="+root);
-        p("workers="+workers);
-        p("socket timeout="+timeout);
-        p("application timeout="+appTimeout);
-        p("accept remote connections=" + acceptRemoteConnections);
+    	logger.fine("root="+root);
+    	logger.fine("workers="+workers);
+    	logger.fine("socket timeout="+timeout);
+    	logger.fine("application timeout="+appTimeout);
+    	logger.fine("accept remote connections=" + acceptRemoteConnections);
     }
 
     void stopServer() {
@@ -179,7 +176,7 @@ public class BrowserUI {
 	        }
 	        
 	        ss.setSoTimeout(appTimeout);
-	        log("port=" + ss.getLocalPort());
+	        logger.fine("port=" + ss.getLocalPort());
 
 	        running=true;
 	        ServerThread server = new ServerThread(this);
@@ -198,6 +195,10 @@ public class BrowserUI {
     	return contents.get(key);
     }
     
+    /**
+     * Registers a configured instance for later retrieval 
+     * @param c the instance to register
+     */
     public synchronized void registerContents(Content c) {
     	String key = c.getClass().getCanonicalName();
     	if (key != null) {
@@ -210,9 +211,13 @@ public class BrowserUI {
     	}
     }
     
-    public void display(String page) throws IOException {
+    public void display(String page) {
     	if (!running) {
-    		startServer();
+    		try {
+    			startServer();
+    		} catch (IOException e) {
+    			throw new RuntimeException("Failed to start server.", e);
+    		}
     	}
         String url = "http://localhost:" + getPort()  + "/" + page;
         log("Launching " + url);
