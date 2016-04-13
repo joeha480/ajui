@@ -10,4 +10,4 @@ Provides a small GUI platform accessible using screen readers and braille displa
   * No native library/platform dependencies
 
 ## System requirements ##
-Java 1.6 or later.
+Java 8 or later.
