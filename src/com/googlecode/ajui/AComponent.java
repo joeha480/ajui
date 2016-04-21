@@ -2,6 +2,7 @@ package com.googlecode.ajui;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 public interface AComponent {
@@ -12,5 +13,6 @@ public interface AComponent {
 	public String getIdentifier();
 	public List<? extends AComponent> getChildren();
 	public XHTMLTagger getHTML(Context context);
+	public boolean processEvent(String key, String type, Map<String, String> data);
 
 }

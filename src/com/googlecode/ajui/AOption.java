@@ -2,6 +2,7 @@ package com.googlecode.ajui;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AOption implements AInlineComponent {
 
@@ -67,6 +68,12 @@ public class AOption implements AInlineComponent {
 	public void update() {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public boolean processEvent(String key, String type, Map<String, String> data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	

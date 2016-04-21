@@ -6,22 +6,28 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.event.EventListenerList;
+
 public abstract class AbstractComponent<T extends AComponent> extends ArrayList<T> implements AComponent {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1238120276336545065L;
+	protected final String key;
 	protected List<String> classes;
 	protected Map<String, String> attrs;
 	protected String id;
 	private Date updated;
+	protected EventListenerList ell;
 	
 	public AbstractComponent() {
+		this.key = KeyHandler.getInstance().nextKey();
 		this.classes = new ArrayList<>();
 		this.id = null;
 		this.attrs = new HashMap<>();
 		this.updated = new Date();
+		this.ell = new EventListenerList();
 	}
 
 	protected abstract String getTagName();
@@ -117,6 +123,24 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	@Override
 	public void update() {
 		updated = new Date();
+	}
+	
+	@Override
+	public boolean processEvent(String sender, String type, Map<String, String> data) {
+		if (sender.equals(key)) {
+			processEventMatch(type, data);
+			return true;
+		} else {
+			for (AComponent c : getChildren()) {
+				if (c.processEvent(sender, type, data)) {
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+	
+	void processEventMatch(String type, Map<String, String> data) {
 	}
 
 }

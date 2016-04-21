@@ -2,6 +2,7 @@ package com.googlecode.ajui;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class ALabel implements AInlineComponent {
 	private String text;
@@ -46,5 +47,11 @@ public class ALabel implements AInlineComponent {
 	@Override
 	public void update() {
 		update = new Date();
+	}
+
+	@Override
+	public boolean processEvent(String key, String type, Map<String, String> data) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 }

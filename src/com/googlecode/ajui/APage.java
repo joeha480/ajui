@@ -9,8 +9,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.logging.Logger;
+
+import com.googlecode.ajui.event.Events;
 
 public abstract class APage implements Content {
+	private final static Logger logger = Logger.getLogger(APage.class.getCanonicalName());
+	
 	private AComponent view;
 	private String title;
 	private final Map<String, String> bodyAttributes;
@@ -69,8 +74,32 @@ public abstract class APage implements Content {
 		return scriptPaths.remove(path);
 	}
 	
+	private void processEvent(Map<String, String> args) {
+		String event = args.remove(Events.EVENT_KEY);
+		if (event == null) {
+			return;
+		} else { 
+			String sender = args.remove(Events.SENDER_KEY);
+			if (sender==null) {
+				return;
+			} else {
+				Map<String, String> data = new HashMap<>();
+				for (String key : args.keySet()) {
+					if (key.startsWith(Events.EVENT_PREFIX)) {
+						data.put(key, args.get(key));
+					}
+				}
+				view.processEvent(sender, event, data);
+				for (String key : data.keySet()) {
+					args.remove(key);
+				}
+			}
+		}
+	}
+	
 	@Override
 	public Reader getContent(String key, Context context) throws IOException {
+		processEvent(context.getArgs());
 		XHTMLTagger sb = new XHTMLTagger();
 		sb.start("html").attr("xmlns", "http://www.w3.org/1999/xhtml")
 		.start("head")

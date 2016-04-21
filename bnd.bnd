@@ -1,5 +1,6 @@
 Export-Package:  \
-	com.googlecode.ajui
+	com.googlecode.ajui,\
+	com.googlecode.ajui.event
 Private-Package:  \
 	com.googlecode.ajui.l10n
 Include-Resource: / = src/
