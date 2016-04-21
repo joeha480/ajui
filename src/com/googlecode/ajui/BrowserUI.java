@@ -198,8 +198,9 @@ public class BrowserUI {
     /**
      * Registers a configured instance for later retrieval 
      * @param c the instance to register
+     * @return returns the key
      */
-    public synchronized void registerContents(Content c) {
+    public synchronized String registerContents(Content c) {
     	String key = c.getClass().getCanonicalName();
     	if (key != null) {
     		if (contents.containsKey(key)) {
@@ -209,6 +210,7 @@ public class BrowserUI {
     	} else {
     		throw new IllegalArgumentException("Cannot get canonical name for " + c);
     	}
+    	return key;
     }
     
     public void display(String page) {
