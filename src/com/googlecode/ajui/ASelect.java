@@ -13,7 +13,7 @@ public class ASelect extends AbstractComponent<AOption> implements AInlineCompon
 	}
 	
 	public void setSelected(String val) {
-		for (AOption o : this) {
+		for (AOption o : getChildren()) {
 			o.setIsSelected(o.getValue().equals(val));
 		}
 	}

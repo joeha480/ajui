@@ -8,12 +8,13 @@ import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
-public abstract class AbstractComponent<T extends AComponent> extends ArrayList<T> implements AComponent {
+public abstract class AbstractComponent<T extends AComponent> implements AComponent {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1238120276336545065L;
+	private List<T> children; 
 	protected final String key;
 	protected List<String> classes;
 	protected Map<String, String> attrs;
@@ -22,6 +23,7 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 	protected EventListenerList ell;
 	
 	public AbstractComponent() {
+		this.children = new ArrayList<>();
 		this.key = KeyHandler.getInstance().nextKey();
 		this.classes = new ArrayList<>();
 		this.id = null;
@@ -97,7 +99,7 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 		if (classes.length()>0) {
 			tagger.attr("class", classes.toString());
 		}
-		for (AComponent c : this) {
+		for (AComponent c : children) {
 			tagger.insert(c.getHTML(context));
 		}
 		tagger.end();
@@ -105,9 +107,25 @@ public abstract class AbstractComponent<T extends AComponent> extends ArrayList<
 		return tagger;
 	}
 	
+	public boolean add(T e) {
+		return children.add(e);
+	}
+	
+	public boolean remove(T e) {
+		return children.remove(e);
+	}
+	
+	public T remove(int index) {
+		return children.remove(index);
+	}
+	
+	public void removeAll() {
+		children.clear();
+	}
+	
 	@Override
 	public List<T> getChildren() {
-		return this;
+		return children;
 	}
 
 	@Override
