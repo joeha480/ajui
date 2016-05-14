@@ -1,10 +1,12 @@
 package com.googlecode.ajui;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +23,8 @@ public abstract class APage implements Content {
 	private final Map<String, String> bodyAttributes;
 	private final List<String> stylePaths;
 	private final List<String> scriptPaths;
+	private final String javascript;
+	private final String xmlTarget;
 
 	public APage() {
 		this(null);
@@ -32,8 +36,25 @@ public abstract class APage implements Content {
 		this.bodyAttributes = Collections.synchronizedMap(new HashMap<>());
 		this.stylePaths = Collections.synchronizedList(new ArrayList<>());
 		this.scriptPaths = Collections.synchronizedList(new ArrayList<>());
+		try {
+			ResourceLocator l = new ResourceLocator();
+			InputStream res = l.getResource("resource-files/update.js").openStream();
+			int c;
+			StringBuilder sb = new StringBuilder();
+			while ((c=res.read())>-1) {
+				sb.append((char)c);
+			}
+			this.javascript = "/* <![CDATA[  */ \n" + sb.toString() +
+					"\nfunction ping() {"
+					+ "get(\""+this.getClass().getCanonicalName()+".xml\");"
+					+ "}"
+					+ "\n /*  ]]> */";
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		this.xmlTarget = "/" + this.getClass().getCanonicalName() + ".xml";
 	}
-	
+
 	public void setView(AComponent view) {
 		this.view = view;
 	}
@@ -99,29 +120,50 @@ public abstract class APage implements Content {
 	
 	@Override
 	public Reader getContent(String key, Context context) throws IOException {
-		processEvent(context.getArgs());
-		XHTMLTagger sb = new XHTMLTagger();
-		sb.start("html").attr("xmlns", "http://www.w3.org/1999/xhtml")
-		.start("head")
-			.start("meta").attr("http-equiv", "content-type").attr("content", "text/html; charset=UTF-8").end()
-			.start("title").text(title).end();
-		for (String style : stylePaths) {
-			sb.start("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", style).end();
+		if (context.getTarget().equals(xmlTarget)) {
+			String type = context.getArgs().get("type");
+			if ("update".equals(type)) {
+				//get update
+				return new StringReader("<xml></xml>");
+			} else if ("event".equals(type)) {
+				//process events
+				processEvent(context.getArgs());
+				return new StringReader("<ok>"+new Date()+"</ok>");
+			} else {
+				return new StringReader("<xml/>");
+			}
+		} else {
+			processEvent(context.getArgs());
+			XHTMLTagger sb = new XHTMLTagger();
+			sb.start("html").attr("xmlns", "http://www.w3.org/1999/xhtml")
+			.start("head")
+				.start("meta").attr("http-equiv", "content-type").attr("content", "text/html; charset=UTF-8").end()
+				.start("title").text(title).end();
+			for (String style : stylePaths) {
+				sb.start("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", style).end();
+			}
+			insertScript(sb);
+			for (String script : scriptPaths) {
+				sb.start("script").attr("src", script).end();
+			}
+			sb.end();
+			sb.start("body");
+			for (Entry<String, String> entry : bodyAttributes.entrySet()) {
+				sb.attr(entry.getKey(), entry.getValue());
+			}
+			if (view!=null) {
+				sb.insert(view.getHTML(context));
+			}
+	    	sb.end();
+	    	sb.end();
+	    	return new StringReader(sb.getResult());
 		}
-		for (String script : scriptPaths) {
-			sb.start("script").attr("src", script).end();
-		}
+	}
+	
+	private void insertScript(XHTMLTagger sb) {
+		sb.start("script").attr("type", "text/javascript");
+		sb.text(javascript, false);
 		sb.end();
-		sb.start("body");
-		for (Entry<String, String> entry : bodyAttributes.entrySet()) {
-			sb.attr(entry.getKey(), entry.getValue());
-		}
-		if (view!=null) {
-			sb.insert(view.getHTML(context));
-		}
-    	sb.end();
-    	sb.end();
-		return new StringReader(sb.getResult());
 	}
 
 	@Override

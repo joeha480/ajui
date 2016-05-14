@@ -28,10 +28,15 @@ public class XHTMLTagger extends XMLTagger {
 	
         @Override
 	public XHTMLTagger text(String text) {
-		return (XHTMLTagger)super.text(text);
+		return text(text, true);
 	}
 	
-        @Override
+    @Override
+	public XHTMLTagger text(String text, boolean escape) {
+		return (XHTMLTagger)super.text(text, escape);
+	}
+
+		@Override
 	public XHTMLTagger attr(String name, String value) {
 		return (XHTMLTagger)super.attr(name, value);
 	}

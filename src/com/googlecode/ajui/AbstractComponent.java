@@ -158,7 +158,7 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 		}
 	}
 	
-	void processEventMatch(String type, Map<String, String> data) {
+	protected void processEventMatch(String type, Map<String, String> data) {
 	}
 
 }

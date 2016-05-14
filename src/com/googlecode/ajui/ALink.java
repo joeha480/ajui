@@ -47,7 +47,7 @@ public class ALink extends AbstractComponent<AInlineComponent> implements AInlin
 	}
 	
 	@Override
-	void processEventMatch(String type, Map<String, String> data) {
+	protected void processEventMatch(String type, Map<String, String> data) {
 		if (type.equals(Events.GET_EVENT)) {
 			GetListener[] ls = ell.getListeners(GetListener.class);
 			for (GetListener l : ls) {

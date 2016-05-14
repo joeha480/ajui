@@ -4,6 +4,7 @@ package com.googlecode.ajui;
 import static com.googlecode.ajui.MimeTypes.MIME_TYPES;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -175,17 +176,31 @@ class Worker implements HttpConstants, Runnable {
                 ui.log(" " + f + " " + context.getArgs().get(f)); //$NON-NLS-1$ //$NON-NLS-2$
             }
             if (doingGet) {
-                URL resource = ui.getResourceURL(target);
-                if (resource != null) {
-                    InputStream iss = resource.openStream();
-                    if (iss != null) {
-                        sendStream(context, new BufferedInputStream(iss), ps);
-                    } else {
-                        send404(target, ps);
-                    }
-                } else {
-                    send404(target, ps);
-                }
+            	Content c = null;
+            	if (target.length()>1) {
+            		c= ui.getContents(target.substring(1));
+            	}
+            	if (c!=null) {
+            		Reader reader = c.getContent("", context);
+            		int ch;
+            		StringBuilder sb = new StringBuilder();
+            		while ((ch=reader.read())>=0) {
+            			sb.append((char)ch);
+            		}
+            		sendStream(context, new ByteArrayInputStream(sb.toString().getBytes()), ps);
+            	} else {
+	                URL resource = ui.getResourceURL(target);
+	                if (resource != null) {
+	                    InputStream iss = resource.openStream();
+	                    if (iss != null) {
+	                        sendStream(context, new BufferedInputStream(iss), ps);
+	                    } else {
+	                        send404(target, ps);
+	                    }
+	                } else {
+	                    send404(target, ps);
+	                }
+            	}
             }
         } finally {
             s.close();

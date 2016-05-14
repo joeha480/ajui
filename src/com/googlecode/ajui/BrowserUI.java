@@ -8,7 +8,9 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.Vector;
 import java.util.logging.Logger;
 
@@ -207,6 +209,8 @@ public class BrowserUI {
     			throw new IllegalStateException("Content already registered");
     		}
     		contents.put(key, c);
+    		contents.put(key+".html", c);
+    		contents.put(key+".xml", c);
     	} else {
     		throw new IllegalArgumentException("Cannot get canonical name for " + c);
     	}
@@ -266,7 +270,8 @@ public class BrowserUI {
 		        	}
 		        }
 		        synchronized (contents) {
-		        	for (Content c : contents.values()) {
+		        	Set<Content> impl = new HashSet<>(contents.values());
+		        	for (Content c : impl) {
 		        		c.close();
 		        	}
 		        }

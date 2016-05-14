@@ -61,11 +61,15 @@ public class XMLTagger {
 	}
 	
 	public XMLTagger text(String text) {
+		return text(text, true);
+	}
+	
+	public XMLTagger text(String text, boolean escape) {
     	if (!startOK) {
     		sb.append(">");
     		startOK = true;
     	}
-		sb.append(escape(text));
+		sb.append(escape?escape(text):text);
 		return this;
 	}
 	

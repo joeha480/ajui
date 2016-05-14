@@ -25,7 +25,7 @@ public class AOption implements AInlineComponent {
 		this.isSelected = value;
 	}
 	
-	protected String getValue() {
+	public String getValue() {
 		return val;
 	}
 
