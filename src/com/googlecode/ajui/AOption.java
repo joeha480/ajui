@@ -76,5 +76,11 @@ public class AOption implements AInlineComponent {
 		return false;
 	}
 
+	@Override
+	public boolean hasUpdate(Date since) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 	
 }

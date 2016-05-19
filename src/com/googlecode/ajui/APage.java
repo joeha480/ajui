@@ -44,11 +44,10 @@ public abstract class APage implements Content {
 			while ((c=res.read())>-1) {
 				sb.append((char)c);
 			}
-			this.javascript = "/* <![CDATA[  */ \n" + sb.toString() +
+			this.javascript = sb.toString() +
 					"\nfunction ping() {"
-					+ "get(\""+this.getClass().getCanonicalName()+".xml\");"
-					+ "}"
-					+ "\n /*  ]]> */";
+					+ "get(\""+this.getClass().getCanonicalName()+".xml?type=update&since=\" + since);"
+					+ "}";
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
@@ -123,8 +122,18 @@ public abstract class APage implements Content {
 		if (context.getTarget().equals(xmlTarget)) {
 			String type = context.getArgs().get("type");
 			if ("update".equals(type)) {
+				String since = context.getArgs().get("since");
 				//get update
-				return new StringReader("<xml></xml>");
+				try {
+					long time = Long.parseLong(since);
+					return new StringReader(getUpdates(new Date(time), context));
+				} catch (NumberFormatException e) {
+					XMLTagger t = new XMLTagger();
+					t.start("error");
+					t.text(e.getMessage());
+					t.end();
+					return new StringReader(t.getResult());
+				}
 			} else if ("event".equals(type)) {
 				//process events
 				processEvent(context.getArgs());
@@ -162,10 +171,63 @@ public abstract class APage implements Content {
 	
 	private void insertScript(XHTMLTagger sb) {
 		sb.start("script").attr("type", "text/javascript");
-		sb.text(javascript, false);
+		sb.text("/* <![CDATA[  */ \n"+
+					"var since="+System.currentTimeMillis()+";\n"+
+				javascript+
+				"\n /*  ]]> */", false);
 		sb.end();
 	}
-
+	
+	private String getUpdates(Date since, Context context) {
+		boolean hasUpdates = false;
+		XMLTagger t = null;
+		for (int i = 0; i<20 && !hasUpdates; i++) {
+			t = new XMLTagger();
+			t.start("updates");
+			//assume view doesn't have updates
+			hasUpdates = getUpdates(t, view, since, context);
+			try {
+				Thread.sleep(100);
+			} catch (InterruptedException e) { }
+			t.end();
+		}
+		return t.getResult();
+	}
+	
+	private boolean getUpdates(XMLTagger tx, AComponent parent, Date since, Context context) {
+		if (parent.getChildren()==null) {
+			return false;
+		}
+		boolean hasUpdate = false;
+		XMLTagger t = new XMLTagger();
+		for (AComponent c : parent.getChildren()) {
+			if (c.hasUpdate(since)) {
+				// this component has updates
+				hasUpdate = true;
+				if (c.getIdentifier()==null) {
+					t = new XMLTagger();
+					insertUpdates(parent, context, t);
+					break;
+				} else {
+					insertUpdates(c, context, t);
+				}
+			} else {
+				// check children
+				hasUpdate |= getUpdates(t, c, since, context);
+			}
+		}
+		tx.insert(t);
+		return hasUpdate;
+	}
+	
+	private void insertUpdates(AComponent comp, Context context, XMLTagger t) {
+		t.start("update").attr("id", comp.getIdentifier()).attr("time", ""+System.currentTimeMillis());
+		for (AComponent contents : comp.getChildren()) {
+			t.insert(contents.getHTML(context));
+		}
+		t.end();
+	}
+	
 	@Override
 	public void close() {
 	}

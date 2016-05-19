@@ -8,6 +8,8 @@ import java.util.Map;
 
 import javax.swing.event.EventListenerList;
 
+import com.googlecode.ajui.event.Events;
+
 public abstract class AbstractComponent<T extends AComponent> implements AComponent {
 
 	/**
@@ -19,6 +21,7 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 	protected List<String> classes;
 	protected Map<String, String> attrs;
 	protected String id;
+	private Date lastUpdated;
 	private Date updated;
 	protected EventListenerList ell;
 	
@@ -29,6 +32,7 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 		this.id = null;
 		this.attrs = new HashMap<>();
 		this.updated = new Date();
+		this.lastUpdated = new Date();
 		this.ell = new EventListenerList();
 	}
 
@@ -54,7 +58,11 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 	 */
         @Override
 	public String getIdentifier() {
-		return id;
+        if (id==null || "".equals(id)) {
+        	return Events.EVENT_PREFIX +"id-" + key;
+        } else {
+        	return id;
+        }
 	}
 
 	/**
@@ -81,10 +89,10 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 		XHTMLTagger tagger = new XHTMLTagger();
 		tagger.start(getTagName());
 		StringBuilder classes = new StringBuilder();
-		boolean first = true;
 		for (String key : attrs.keySet()) {
 			tagger.attr(key, attrs.get(key));
 		}
+		boolean first = true;
 		for (String s : getClasses()) {
 			if (!first) {
 				classes.append(" ");
@@ -108,19 +116,23 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 	}
 	
 	public boolean add(T e) {
+		needsUpdate();
 		return children.add(e);
 	}
 	
 	public boolean remove(T e) {
+		needsUpdate();
 		return children.remove(e);
 	}
 	
 	public T remove(int index) {
+		needsUpdate();
 		return children.remove(index);
 	}
 	
 	public void removeAll() {
 		children.clear();
+		needsUpdate();
 	}
 	
 	@Override
@@ -129,16 +141,30 @@ public abstract class AbstractComponent<T extends AComponent> implements ACompon
 	}
 
 	@Override
+	@Deprecated
 	public boolean hasUpdates(Date since) {
 		return updated.after(since);
+	}
+	
+	@Override
+	public boolean hasUpdate(Date since) {
+		return lastUpdated.after(since);
 	}
 
 	@Override
 	public boolean hasIdentifer() {
 		return id!=null && !"".equals(id);
 	}
+	
+	/**
+	 * 
+	 */
+	protected void needsUpdate() {
+		lastUpdated = new Date();
+	}
 
 	@Override
+	@Deprecated
 	public void update() {
 		updated = new Date();
 	}

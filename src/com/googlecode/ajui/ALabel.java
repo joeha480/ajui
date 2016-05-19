@@ -7,6 +7,7 @@ import java.util.Map;
 public class ALabel implements AInlineComponent {
 	private String text;
 	private Date update;
+	private Date lastUpdated;
 
 	public ALabel(String text) {
 		setText(text);
@@ -15,6 +16,7 @@ public class ALabel implements AInlineComponent {
 	public void setText(String text) {
 		this.text = text;
 		this.update = new Date();
+		needsUpdate();
 	}
 
 	@Override
@@ -29,12 +31,11 @@ public class ALabel implements AInlineComponent {
 
 	@Override
 	public List<? extends AComponent> getChildren() {
-		//ArrayList<AComponent> ret = new ArrayList<AComponent>();
-		//ret.add(this);
 		return null;
 	}
 
 	@Override
+	@Deprecated
 	public boolean hasUpdates(Date since) {
 		return update.after(since);
 	}
@@ -45,13 +46,22 @@ public class ALabel implements AInlineComponent {
 	}
 
 	@Override
+	@Deprecated
 	public void update() {
 		update = new Date();
 	}
 
 	@Override
 	public boolean processEvent(String key, String type, Map<String, String> data) {
-		// TODO Auto-generated method stub
 		return false;
+	}
+	
+	private void needsUpdate() {
+		lastUpdated = new Date();
+	}
+
+	@Override
+	public boolean hasUpdate(Date since) {
+		return lastUpdated.after(since);
 	}
 }

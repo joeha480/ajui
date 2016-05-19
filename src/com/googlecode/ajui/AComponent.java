@@ -7,8 +7,11 @@ import java.util.Map;
 
 public interface AComponent {
 	
+	@Deprecated
 	public void update();
+	@Deprecated
 	public boolean hasUpdates(Date since);
+	public boolean hasUpdate(Date since);
 	public boolean hasIdentifer();
 	public String getIdentifier();
 	public List<? extends AComponent> getChildren();
