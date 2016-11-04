@@ -16,7 +16,7 @@ import java.util.logging.Logger;
 import com.googlecode.ajui.event.Events;
 
 public abstract class APage implements Content {
-	private final static Logger logger = Logger.getLogger(APage.class.getCanonicalName());
+	private static final Logger logger = Logger.getLogger(APage.class.getCanonicalName());
 	
 	private AComponent view;
 	private String title;

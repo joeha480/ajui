@@ -16,7 +16,7 @@ import com.googlecode.ajui.event.GetEvent;
 import com.googlecode.ajui.event.GetListener;
 
 public class ASelectComponent extends AbstractComponent<AComponent> implements ABlockComponent {
-	private final static String EVENT_SELECTED = Events.EVENT_PREFIX+"selected";
+	private static final String EVENT_SELECTED = Events.EVENT_PREFIX+"selected";
 	private final ASelect select;
 	
 	public ASelectComponent() {

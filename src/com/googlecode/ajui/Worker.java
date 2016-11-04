@@ -18,9 +18,9 @@ import java.util.Vector;
 
 
 class Worker implements HttpConstants, Runnable {
-    final static int BUF_SIZE = 2048;
-    final static String ENCODING = "utf-8";
-    final static byte[] st = new byte[]{'<', '?', 'a', 'j', 'u', 'i', ' '};
+    static final int BUF_SIZE = 2048;
+    static final String ENCODING = "utf-8";
+    static final byte[] st = new byte[]{'<', '?', 'a', 'j', 'u', 'i', ' '};
     static final byte[] EOL = {(byte)'\r', (byte)'\n' };
     
     boolean stopped;

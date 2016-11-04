@@ -19,12 +19,12 @@ import java.util.logging.Logger;
  * @author Joel Håkansson
  */
 public class BrowserUI {
-	private final static Logger logger = Logger.getLogger(BrowserUI.class.getCanonicalName());
-	private final static String ROOT_PAGE = "/index.html";
-    private final static int SERVER_TIMEOUT = 30000;
-    private final static int DEFAULT_TIMEOUT = 5000;
-    private final static int MIN_TIMEOUT = 1000;
-    private final static int MIN_APP_TIMEOUT = 1000;
+	private static final Logger logger = Logger.getLogger(BrowserUI.class.getCanonicalName());
+	private static final String ROOT_PAGE = "/index.html";
+    private static final int SERVER_TIMEOUT = 30000;
+    private static final int DEFAULT_TIMEOUT = 5000;
+    private static final int MIN_TIMEOUT = 1000;
+    private static final int MIN_APP_TIMEOUT = 1000;
 
     private ServerSocket ss;
     private boolean running = false;
