@@ -217,7 +217,7 @@ public class BrowserUI {
     	return key;
     }
     
-    public void display(String page) {
+    public String start(String page) {
     	if (!running) {
     		try {
     			startServer();
@@ -225,9 +225,17 @@ public class BrowserUI {
     			throw new RuntimeException("Failed to start server.", e);
     		}
     	}
-        String url = "http://localhost:" + getPort()  + "/" + page;
+        return urlForPage(page);
+    }
+    
+    public void display(String page) {
+    	String url = start(page);
         log("Launching " + url);
         BareBonesBrowserLaunch.openURL(url);
+    }
+    
+    public String urlForPage(String page) {
+    	return "http://localhost:" + getPort()  + "/" + page;
     }
     
     private class ServerThread implements Runnable {
