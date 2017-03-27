@@ -122,6 +122,7 @@ public class BrowserUI {
 
     /* print to the log file */
     void log(String s) {
+    	if (log==null) { return; }
         synchronized (log) {
             log.println(s);
             log.flush();
