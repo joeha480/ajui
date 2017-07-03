@@ -137,7 +137,7 @@ public class BrowserUI {
     	logger.fine("accept remote connections=" + acceptRemoteConnections);
     }
 
-    void stopServer() {
+    public void stopServer() {
     	
 		log("Closing server...");
 		Runnable r = new Runnable(){
