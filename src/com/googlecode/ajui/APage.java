@@ -143,30 +143,34 @@ public abstract class APage implements Content {
 			}
 		} else {
 			processEvent(context.getArgs());
-			XHTMLTagger sb = new XHTMLTagger();
-			sb.start("html").attr("xmlns", "http://www.w3.org/1999/xhtml")
-			.start("head")
-				.start("meta").attr("http-equiv", "content-type").attr("content", "text/html; charset=UTF-8").end()
-				.start("title").text(title).end();
-			for (String style : stylePaths) {
-				sb.start("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", style).end();
-			}
-			insertScript(sb);
-			for (String script : scriptPaths) {
-				sb.start("script").attr("src", script).end();
-			}
-			sb.end();
-			sb.start("body");
-			for (Entry<String, String> entry : bodyAttributes.entrySet()) {
-				sb.attr(entry.getKey(), entry.getValue());
-			}
-			if (view!=null) {
-				sb.insert(view.getHTML(context));
-			}
-	    	sb.end();
-	    	sb.end();
-	    	return new StringReader(sb.getResult());
+	    	return new StringReader(getResult(context));
 		}
+	}
+	
+	public String getResult(Context context) {
+		XHTMLTagger sb = new XHTMLTagger();
+		sb.start("html").attr("xmlns", "http://www.w3.org/1999/xhtml")
+		.start("head")
+			.start("meta").attr("http-equiv", "content-type").attr("content", "text/html; charset=UTF-8").end()
+			.start("title").text(title).end();
+		for (String style : stylePaths) {
+			sb.start("link").attr("rel", "stylesheet").attr("type", "text/css").attr("href", style).end();
+		}
+		insertScript(sb);
+		for (String script : scriptPaths) {
+			sb.start("script").attr("src", script).end();
+		}
+		sb.end();
+		sb.start("body");
+		for (Entry<String, String> entry : bodyAttributes.entrySet()) {
+			sb.attr(entry.getKey(), entry.getValue());
+		}
+		if (view!=null) {
+			sb.insert(view.getHTML(context));
+		}
+    	sb.end();
+    	sb.end();
+    	return sb.getResult();
 	}
 	
 	private void insertScript(XHTMLTagger sb) {
