@@ -1,9 +1,0 @@
-Export-Package:  \
-	com.googlecode.ajui,\
-	com.googlecode.ajui.event,\
-	com.googlecode.ajui.comp
-Private-Package:  \
-	com.googlecode.ajui.l10n
-Include-Resource: / = src/
--sources: false
-Service-Component: *
