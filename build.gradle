@@ -52,7 +52,7 @@ repositories {
 }
 
 dependencies {
-
+	testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
 bundle {
@@ -66,7 +66,8 @@ bundle {
         'Built-By': System.getProperty("user.name"),
         'Built-On': new Date().format('yyyy-MM-dd'),
         'Repository-Revision': "$repoRevision",
-        'Repository-URL': "$repositoryURL"
+        'Repository-URL': "$repositoryURL",
+		'Include-Resource': 'LICENSE, NOTICE'
     ]
 }
 
