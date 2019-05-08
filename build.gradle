@@ -18,7 +18,10 @@ apply plugin: 'biz.aQute.bnd.builder'
 
 compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
-javadoc.options.encoding = 'UTF-8'
+javadoc.options {
+	encoding = 'UTF-8'
+	source = 8
+}
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
